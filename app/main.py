@@ -40,36 +40,96 @@ async def handle_upload(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/extract", response_model=ExtractResponse)
+@app.post("/extract",response_model=ExtractResponse)
 def extract_info(request: ExtractRequest):
     try:
-        # Save temp image from base64
+        print("From realdata")
+        # Save image from base64
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_img:
             temp_img.write(base64.b64decode(request.image_base64))
             temp_img_path = temp_img.name
 
-        # OCR
+        # OCR and clean text
         text = image_to_text(temp_img_path)
         cleaned_text = text.replace("\n", " ").replace("  ", " ")
 
-        # Extraction logic
+        # Extraction steps
         regex_output = extract_fields(text)["extracted_fields"]
         ner_output = extract_entities(cleaned_text)
         fallback_output = fallback_extract(cleaned_text)
 
-        # Combine results
+        # Merge all fields
         final_output = regex_output.copy()
+        print("Final:",final_output)
         final_output.update({k: v for k, v in ner_output.items() if v})
         for k, v in fallback_output.items():
             if not final_output.get(k):
                 final_output[k] = v
-
-        # Fill blanks with "Unknown"
-        for field in ["name", "college", "branch", "roll_number", "valid_upto"]:
+        print("re-check")
+        # Fill unknowns and collect missing fields
+        required_fields = ["name", "college", "branch", "roll_number", "valid_upto"]
+        missing = []
+        for field in required_fields:
             if not final_output.get(field):
                 final_output[field] = "Unknown"
+                missing.append(field)
 
-        return ExtractResponse(status="success", extracted_fields=final_output)
+        # Determine status
+        if len(missing) == len(required_fields):
+            status = "failure"
+        elif missing:
+            status = "partial_success"
+        else:
+            status = "success"
+
+        # Confidence score can be arbitrary for now (you can improve later)
+        confidence_score = round(1 - len(missing) / len(required_fields), 2)
+
+        # Derive user_id from OCR or fallback (optional logic)
+        user_id = "stu_" + str(abs(hash(text)) % 10000)
+
+        return {
+            "user_id": user_id,
+            "extracted_fields": final_output,
+            "confidence_score": confidence_score,
+            "missing_fields": missing,
+            "status": status
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# @app.post("/extract", response_model=ExtractResponse)
+# def extract_info(request: ExtractRequest):
+#     try:
+#         # Save temp image from base64
+#         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_img:
+#             temp_img.write(base64.b64decode(request.image_base64))
+#             temp_img_path = temp_img.name
+
+#         # OCR
+#         text = image_to_text(temp_img_path)
+#         cleaned_text = text.replace("\n", " ").replace("  ", " ")
+
+#         # Extraction logic
+#         regex_output = extract_fields(text)["extracted_fields"]
+#         ner_output = extract_entities(cleaned_text)
+#         fallback_output = fallback_extract(cleaned_text)
+
+#         # Combine results
+#         final_output = regex_output.copy()
+#         final_output.update({k: v for k, v in ner_output.items() if v})
+#         for k, v in fallback_output.items():
+#             if not final_output.get(k):
+#                 final_output[k] = v
+
+#         # Fill blanks with "Unknown"
+#         for field in ["name", "college", "branch", "roll_number", "valid_upto"]:
+#             if not final_output.get(field):
+#                 final_output[field] = "Unknown"
+
+#         return ExtractResponse(status="success", extracted_fields=final_output)
+
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))

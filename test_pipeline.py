@@ -5,7 +5,7 @@ from model.fallback_extractor import fallback_extract  # <- you must have create
 import json
 
 # Step 1: Read image
-img_path = "dataset/images/stu_044.png"  # 👈 change as needed
+img_path = "test_dataset/images/test_004.png"  # 👈 change as needed
 text = image_to_text(img_path)
 
 print("📝 OCR Output:", text)

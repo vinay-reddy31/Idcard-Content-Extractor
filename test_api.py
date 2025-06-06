@@ -2,7 +2,7 @@ import base64
 import requests
 
 # 1. Load image and convert to base64
-with open("test_dataset/images/test_001.png", "rb") as img_file:
+with open("test_dataset/images/test_004.png", "rb") as img_file:
     base64_str = base64.b64encode(img_file.read()).decode("utf-8")
 
 # 2. Send to FastAPI endpoint
