@@ -1,5 +1,6 @@
 import spacy
 import os
+from collections import defaultdict
 
 model_path = "ner_model"
 if not os.path.exists(model_path):
@@ -9,8 +10,10 @@ nlp = spacy.load(model_path)
 
 def extract_entities(text):
     doc = nlp(text)
-    output = {}
+    print("Ner output:")
+    result = { "name": "", "college": "", "roll_number": "", "branch": "", "valid_upto": "" }
     for ent in doc.ents:
-        print("ent:",ent)
-        output[ent.label_.lower()] = ent.text
-    return output
+        label = ent.label_.lower()
+        if label in result:
+            result[label] = ent.text
+    return result

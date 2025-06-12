@@ -20,7 +20,9 @@
     "ner":[
       "BRANCH",
       "COLLEGE",
-      "NAME"
+      "NAME",
+      "ROLL_NUMBER",
+      "VALID_UPTO"
     ]
   },
   "pipeline":[
