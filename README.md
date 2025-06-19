@@ -200,4 +200,3 @@ docker run -p 8000:8000 idcard-extractor
 
  © 2025 \[Vinay Teja @ Turtil]
 
-```
