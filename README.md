@@ -190,6 +190,44 @@ docker run -p 8000:8000 idcard-extractor
 * Incorrect matches → Introduced fallback & stricter regex
 * Deployment bugs → Fixed with Uvicorn + Docker optimization
 
+---
+
+## V2 Version Updates
+
+
+### 🔄 **Version: v2 – Field Normalization & Accuracy Upgrade**
+
+#### 📌 Description:
+
+Version **v2** introduces major improvements to the ID Card Content Extraction pipeline by adding **normalization logic** for extracted fields and refining the overall flow for better accuracy, consistency, and reliability.
+
+---
+
+### ✅ **What’s New in v2**
+
+| Feature                                    | Description                                                                                                                                                       |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🧠 **Field Normalization**                 | Added `normalize_name`, `normalize_college`, `normalize_branch`, and `normalize_roll_number` to correct inconsistencies, typos, and duplicates in extracted text. |
+| ⚙️ **Integrated Normalization in FastAPI** | All normalization functions are now applied in `main.py` (backend API) before sending the final output to frontend/API consumers.                                 |
+| 📊 **Improved Accuracy**                   | Accuracy improved from **80% → 91%** through better post-processing, fallback logic, and normalization of field variants.                                         |
+| 🧪 **Test Coverage**                       | Updated `test_pipeline.py`, `evaluate_accuracy.py`, and ensured consistent outputs across CLI, frontend, and API.                                                 |
+| 🔍 **Edge Case Handling**                  | Resolved issues where fields like name/college were not detected due to inconsistent OCR/NER results.                                                             |
+| 📁 **Cleaner Output**                      | Ensured that missing or unknown fields are gracefully handled and returned as `"Unknown"` instead of causing errors.                                              |
+
+---
+
+### 🛠️ Fixes
+
+* 🐞 Fixed `NoneType` `.strip()` errors when missing fields were being normalized.
+* 🐞 Fixed inconsistent field matching due to OCR casing or spacing issues.
+* 🐞 Improved branch and roll number disambiguation with rule-based normalization.
+
+---
+
+### 📈 Summary:
+
+This version strengthens the pipeline with smart normalization, leading to **cleaner data, better matching, and higher field-level accuracy.**
+
 
 ## 🔮 Future Enhancements
 
