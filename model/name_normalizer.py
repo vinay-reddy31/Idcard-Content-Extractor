@@ -6,8 +6,6 @@ SUFFIXES = ["phd", "md", "dvm", "msc", "btech"]
 
 def normalize_name(name: str) -> str:
     name = name.strip()
-
-    # Lowercase for processing
     name_lower = name.lower()
 
     # Remove prefix (e.g., Dr. John → John)

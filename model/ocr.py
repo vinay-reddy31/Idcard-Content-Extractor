@@ -3,7 +3,7 @@ import pytesseract
 import cv2
 import shutil
 
-# ✅ Dynamic path setup
+
 if not shutil.which("tesseract"):
     # If not found in system PATH, manually set it (Windows fallback)
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"

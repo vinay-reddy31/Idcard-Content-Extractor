@@ -2,7 +2,6 @@
 
 import re
 
-# 🔁 Mapping of normalized forms
 NORMALIZED_COLLEGES = {
     "anna university": "Anna University",
     "ann university": "Anna University",
@@ -40,13 +39,9 @@ NORMALIZED_COLLEGES = {
 def normalize_college(raw_value: str) -> str:
     if not raw_value:
         return "Unknown"
-
-    # 🧹 Clean value: lower + remove extra spaces/punctuation
     value = raw_value.lower().strip()
     value = re.sub(r"[\s\-_:]+", " ", value)
     value = value.replace("college ", "").replace("university ", "").strip()
-
-    # 🔁 Match from mapping
     for key in NORMALIZED_COLLEGES:
         if key in value:
             return NORMALIZED_COLLEGES[key]

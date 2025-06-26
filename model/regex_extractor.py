@@ -4,7 +4,6 @@ import json
 def extract_fields(text: str, config_path: str = "config.json") -> dict:
     with open(config_path, "r") as f:
         config = json.load(f)
-        # print("🔍 Loaded config:", config)
 
     result = {}
     confidence = []

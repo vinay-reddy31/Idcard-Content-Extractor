@@ -9,7 +9,7 @@ from model.college_normalizer import normalize_college
 import json
 
 # Step 1: Read image
-img_path = "test_dataset/images/test_007.png"  # 👈 change as needed
+img_path = "test_dataset/images/id_001.png" 
 text = image_to_text(img_path)
 print("📝 OCR Output:", text)
 
@@ -17,7 +17,7 @@ print("📝 OCR Output:", text)
 regex_output = extract_fields(text)
 final_output = regex_output["extracted_fields"]
 
-# Step 3: NER
+# Step 3: Data Cleaning and NER Extraction
 cleaned_text = text.replace("\n", " ").replace("  ", " ")
 print("cleaned_txt:", cleaned_text)
 
@@ -28,7 +28,7 @@ print(json.dumps(ner_output, indent=2))
 
 # Step 4: Update final output with NER results only if they exist
 for key, value in ner_output.items():
-    if value:  # not None or empty
+    if value:  
         final_output[key] = value
 
 # Step 5: Fallback extraction
@@ -50,7 +50,7 @@ for field in FIELDS:
 
     # Normalize specific fields
     if field == "branch":
-        final_output[field] = normalize_branch(value)
+        final_output[field] = normalize_branch(value)  if value != "Unknown" else "Unknown"
 
     elif field == "roll_number":
         final_output[field] = normalize_roll_number(value) if value != "Unknown" else "Unknown"

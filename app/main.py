@@ -66,8 +66,6 @@ def extract_info(request: ExtractRequest):
 
         required_fields = ["name", "college", "branch", "roll_number", "valid_upto"]
         missing = []
-
-        # 🔧 Normalize + fill unknowns in one go
         for field in required_fields:
             raw_value = final_output.get(field)
 
@@ -89,7 +87,7 @@ def extract_info(request: ExtractRequest):
             else:
                 final_output[field] = value
 
-        # ⚖️ Status logic
+        # Status logic
         if len(missing) == len(required_fields):
             status = "failure"
         elif missing:
@@ -110,3 +108,16 @@ def extract_info(request: ExtractRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+@app.get("/version")
+def version_info():
+    return {
+        "model_version": "1.0.0",
+        "config_version": "1.0.0"
+    }
+

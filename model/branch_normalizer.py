@@ -29,12 +29,10 @@ BRANCH_ALIASES = {
 def normalize_branch(text: str) -> str:
     if not text:
         return "Unknown"
-    
     text = re.sub(r"[^a-zA-Z\s]", "", text.lower()).strip()
-    text = re.sub(r"\s+", " ", text)  # Normalize extra spaces
-
+    text = re.sub(r"\s+", " ", text)
     for alias, canonical in BRANCH_ALIASES.items():
-        if alias in text:
+        if re.search(rf"\b{re.escape(alias)}\b", text):
             return canonical
 
     return text.title()

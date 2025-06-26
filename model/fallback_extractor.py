@@ -37,9 +37,8 @@ def fallback_extract(text: str) -> dict:
     if match:
         result["roll_number"] = match.group().upper()
 
-    # Valid year fallback (like 2025, 2026...)
+    # Valid upto fallback (like 2025, 2026...)
     year_match = re.search(r"\b(20\d{2})\b", text)
     if year_match:
         result["valid_upto"] = year_match.group()
-
     return result
